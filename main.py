@@ -1,5 +1,6 @@
 from Huffman import Huffman
+import os.path
+from Cli import start
+
 if __name__ == "__main__":
-    huffman = Huffman()
-    huffman.compress_file("Huffman.py", "Huffman.py.huf")
-    huffman.decompress_file("Huffman.py.huf", "Huffman.py.huf.txt")
+    start()

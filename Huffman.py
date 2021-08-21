@@ -10,11 +10,11 @@ class Huffman:
         with open(arch_filename, "wb") as a:
             a.write(bytearray(arch))
 
-    def decompress_file(self, arch_filename, data_filename):
+    def decompress_file(self, arch_filename):
         with open(arch_filename, "rb") as arch:
             read_arch = arch.read()
             data = self.decompress_file_bytes(read_arch)
-        with open(data_filename, "wb") as a:
+        with open( arch_filename + ".txt", "wb") as a:
             a.write(bytearray(data))
 
     def decompress_file_bytes(self, read_arch):
@@ -34,12 +34,12 @@ class Huffman:
                     curr = curr.bit0
                 else:
                     curr = curr.bit1
-                if curr.bit0 is not  None:
+                if curr.bit0 is not None:
                     bit <<= 1
                     continue
-                size += 1
-                if size <= data_length:
+                if size < data_length:
                     data.append(curr.symbol)
+                size += 1
                 curr = root
                 bit <<= 1
         return data
