@@ -40,7 +40,7 @@ def compress(path, file_name=None):
             huffman.compress_file(path, path + ".huf")
         else:
             head, end = os.path.split(path)
-            huffman.compress_file(path, head + file_name + ".huf")
+            huffman.compress_file(path, os.path.join(head, file_name) + ".huf")
     else:
         print("Путь указан неверно")
 
