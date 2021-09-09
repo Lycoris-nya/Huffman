@@ -64,7 +64,7 @@ class Huffman:
 
     @staticmethod
     def parse_header(archive):
-        data_length = archive[0] | (archive[1] << 8) | (archive[1] << 16) | (archive[1] << 24)
+        data_length = archive[0] | (archive[1] << 8) | (archive[2] << 16) | (archive[3] << 24)
         frequencies = [0] * 256
         for i in range(256):
             frequencies[i] = archive[4 + i]
