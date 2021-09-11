@@ -30,7 +30,7 @@ def start():
 
 def help():
     print(
-        "Архивирует или разархивирует указанный файл\nmain.py [--compress [path] [arh-name]]\nmain.py [--decompress [path]]")
+        "Архивирует или разархивирует указанный файл\nmain.py --compress [path] [arh-name]\nmain.py --decompress [path]\nmain.py --help")
 
 
 def compress(path, file_name=None):
