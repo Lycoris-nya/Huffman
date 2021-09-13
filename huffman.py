@@ -1,17 +1,30 @@
 import hashlib
 import math
-import os.path
-
 import os
-import stat
+import os.path
+from datetime import datetime, timezone
 
 from node import Node
 from priority_queue import PriorityQueue
-from datetime import datetime, timezone
 
 
 class Huffman:
     ACCESS = {0: "---", 1: "--x", 2: "-w-", 3: "-wx", 4: "r--", 5: "r-x", 6: "rw-", 7: "rwx"}
+
+    def compress_file_with_password(self, data_filename, archive_filename, password):
+        head, tail = os.path.split(data_filename)
+        with open(data_filename, "rb") as data_file:
+            data = data_file.read()
+            hassh = hashlib.md5(password.encode("UTF-8"))
+            hash_digest = hassh.hexdigest().encode("UTF-8")
+            new_data = bytearray()
+
+            for i, byte in enumerate(data):
+                new_data.append(byte ^ hash_digest[i % len(hash_digest)])
+
+            archive = self.compress_file_bytes(new_data, tail, data_filename)
+        with open(archive_filename, "wb") as a:
+            a.write(bytearray(archive))
 
     def compress_file(self, data_filename, archive_filename):
         head, tail = os.path.split(data_filename)
@@ -21,16 +34,37 @@ class Huffman:
         with open(archive_filename, "wb") as a:
             a.write(bytearray(archive))
 
-    def decompress_file(self, archive_filename):
+    def _decompress_file(self, archive_filename):
         head, tail = os.path.split(archive_filename)
         with open(archive_filename, "rb") as archive_file:
             archive_data = archive_file.read()
             data, file_correct, file_name = self.decompress_file_bytes(archive_data)
-        if file_correct:
+            return file_correct, file_name, bytearray(data)
+
+    def decompress_file(self, archive_filename):
+        head, tail = os.path.split(archive_filename)
+        is_ok, file_name, data = self._decompress_file(archive_filename)
+        if is_ok:
             with open(os.path.join(head, file_name), "wb") as a:
-                a.write(bytearray(data))
+                a.write(data)
         else:
-            print("File is damaged")
+            print("Файл поврежден")
+
+    def decompress_file_with_password(self, archive_filename, password):
+        head, tail = os.path.split(archive_filename)
+        is_ok, file_name, data = self._decompress_file(archive_filename)
+        hassh = hashlib.md5(password.encode("UTF-8"))
+        hash_digest = hassh.hexdigest().encode("UTF-8")
+        new_data = bytearray()
+
+        for i, byte in enumerate(data):
+            new_data.append(byte ^ hash_digest[i % len(hash_digest)])
+
+        if is_ok:
+            with open(os.path.join(head, file_name), "wb") as a:
+                a.write(new_data)
+        else:
+            print("Файл поврежден")
 
     def decompress_file_bytes(self, archive_data):
         data_length, next_index, frequencies = self.parse_header(archive_data)
@@ -52,7 +86,7 @@ class Huffman:
         metadata["access"] = [archive_data[index], archive_data[index + 1], archive_data[index + 2]]
         metadata["link"] = archive_data[index + 3]
         metadata["size"] = archive_data[index + 4] | (archive_data[index + 5] << 8) | (
-                    archive_data[index + 6] << 16) | (archive_data[index + 7] << 24)
+                archive_data[index + 6] << 16) | (archive_data[index + 7] << 24)
         metadata["uid"] = archive_data[index + 8] | (archive_data[index + 9] << 8) | (archive_data[index + 10] << 16)
         metadata["gid"] = archive_data[index + 11] | (archive_data[index + 12] << 8) | (archive_data[index + 13] << 16)
         index, metadata["access_time"] = self.decompress_time(archive_data, index + 14)
