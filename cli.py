@@ -72,7 +72,7 @@ def compress(path, file_name=None, password=None):
             archive_name = path + ".huf"
         else:
             head, end = os.path.split(path)
-            archive_name =  os.path.join(head, file_name) + ".huf"
+            archive_name = os.path.join(head, file_name) + ".huf"
         if password is None:
             huffman.compress_file(path, archive_name)
         else:
@@ -86,7 +86,7 @@ def decompress(path, password=None):
         huffman = Huffman()
         if password is None:
             huffman.decompress_file(path)
-        else :
+        else:
             huffman.decompress_file_with_password(path, password)
     else:
         print("Путь указан неверно")

@@ -69,10 +69,12 @@ class Huffman:
     def decompress_file_bytes(self, archive_data):
         data_length, next_index, frequencies = self.parse_header(archive_data)
         next_index, hash_string = self.parse_hash(archive_data, next_index)
-        root = self.create_huffman_tree(frequencies)
         next_index, file_name = self.parse_file_name(archive_data, next_index)
         next_index, metadata = self.decompress_metadata(archive_data, next_index)
-        data = self.decompress(archive_data, next_index, data_length, root)
+        data = []
+        if data_length > 0:
+            root = self.create_huffman_tree(frequencies)
+            data = self.decompress(archive_data, next_index, data_length, root)
         file_correct = self.check_integrity(hash_string, data)
         self.show_metadata(metadata)
         return data, file_correct, file_name
@@ -162,10 +164,13 @@ class Huffman:
         hash_string = hash_object.digest()
 
         frequencies = self.calculate_freq(data)
+        if len(data)>0:
+            root = self.create_huffman_tree(frequencies)
+            codes = self.create_huffman_code(root)
+            bits = self.compress(data, codes)
+        else:
+            bits = []
 
-        root = self.create_huffman_tree(frequencies)
-        codes = self.create_huffman_code(root)
-        bits = self.compress(data, codes)
         head = self.create_header(len(data), frequencies)
         return head + list(hash_string) + [len(file_name)] + list(file_name.encode("UTF-8")) + self.get_metadata(
             full_name) + bits
