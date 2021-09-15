@@ -15,7 +15,7 @@ class Huffman:
         head, tail = os.path.split(data_filename)
         with open(data_filename, "rb") as data_file:
             data = data_file.read()
-            hassh = hashlib.md5(password.encode("UTF-8"))
+            hassh = hashlib.sha512(password.encode("UTF-8"))
             hash_digest = hassh.hexdigest().encode("UTF-8")
             new_data = bytearray()
 
@@ -53,8 +53,8 @@ class Huffman:
     def decompress_file_with_password(self, archive_filename, password):
         head, tail = os.path.split(archive_filename)
         is_ok, file_name, data = self._decompress_file(archive_filename)
-        hassh = hashlib.md5(password.encode("UTF-8"))
-        hash_digest = hassh.hexdigest().encode("UTF-8")
+        hash = hashlib.sha512(password.encode("UTF-8"))
+        hash_digest = hash.hexdigest().encode("UTF-8")
         new_data = bytearray()
 
         for i, byte in enumerate(data):
