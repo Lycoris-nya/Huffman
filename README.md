@@ -1,6 +1,6 @@
 # Huffman
 Архиватор Huffman c CLI интерфейсом
-'''
+```
     Программа для архивироания и разархивирования файлов, используя алгорит Хаффмана.
     USAGE:
         main.py -c, --compress   [path] {archive_name} (-p password)
@@ -15,4 +15,4 @@
     
         main.py -d my_archived_file.huf
         main.py -d my_archived_file.huf -p my_password
-'''
+```
