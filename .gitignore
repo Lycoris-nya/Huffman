@@ -153,3 +153,6 @@ fabric.properties
 save.txt
 *.txt
 *.huf
+
+tests/*
+!tests/make_files_for_tests.py
