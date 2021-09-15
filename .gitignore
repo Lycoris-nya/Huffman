@@ -155,4 +155,4 @@ save.txt
 *.huf
 
 tests/*
-!tests/make_files_for_tests.py
+!make_files_for_tests.py

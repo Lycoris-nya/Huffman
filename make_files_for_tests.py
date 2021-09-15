@@ -1,10 +1,11 @@
 import random
+import os
 
 
 def create_files(name, data):
-    with open(name, "w+") as a:
+    with open(os.path.join("tests", name), "w+") as a:
         a.write(data)
-    with open(name + "_copy", "w+") as a:
+    with open(os.path.join("tests", name + "_copy"), "w+") as a:
         a.write(data)
 
 
@@ -16,7 +17,7 @@ def make_random_test():
     return data
 
 
-if __name__ == "__main__":
+def generate_tests():
     create_files("test1", "")
     create_files("test2", "a")
     create_files("test3", "a" * 10)
@@ -27,3 +28,7 @@ if __name__ == "__main__":
     for i in range(7, 18):
         name = "test" + str(i)
         create_files(name, make_random_test())
+
+
+if __name__ == "__main__":
+    generate_tests()

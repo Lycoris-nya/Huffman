@@ -2,9 +2,14 @@ import unittest
 import os
 import random
 from cli import compress, decompress
+import make_files_for_tests
 
 
 class MyTestCase(unittest.TestCase):
+    def setUp(self) -> None:
+        make_files_for_tests.generate_tests()
+
+
     def test_empty_file(self):
         self.assertTrue(is_run_correct_without_password("test1"))
         self.assertTrue(is_run_correct_with_password("test1", "asd", "asd"))
@@ -12,7 +17,6 @@ class MyTestCase(unittest.TestCase):
     def test_a(self):
         self.assertTrue(is_run_correct_without_password("test2"))
         self.assertTrue(is_run_correct_with_password("test2", "asd", "asd"))
-        self.assertFalse(is_run_correct_with_password("test2", "asd", get_random_passeword()))
 
     def test_10a(self):
         self.assertTrue(is_run_correct_without_password("test3"))
